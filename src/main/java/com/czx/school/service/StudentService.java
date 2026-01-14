@@ -1,6 +1,6 @@
 package com.czx.school.service;
 
-import com.czx.school.DO.Student;
+import com.czx.school.entity.Student;
 import com.czx.school.DTO.ChangStudentMajorDTO;
 import com.czx.school.DTO.ChangeStudentNameDTO;
 

@@ -2,7 +2,7 @@ package com.czx.school.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.czx.school.DO.Course;
+import com.czx.school.entity.Course;
 import com.czx.school.DTO.ChangeScoreDTO;
 import com.czx.school.DTO.ChangeTeacherDTO;
 import com.czx.school.mapper.CourseMapper;

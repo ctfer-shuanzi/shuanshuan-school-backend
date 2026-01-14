@@ -1,7 +1,7 @@
 package com.czx.school.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.czx.school.DO.Course;
+import com.czx.school.entity.Course;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

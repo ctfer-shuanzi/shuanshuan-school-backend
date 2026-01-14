@@ -1,6 +1,6 @@
 package com.czx.school.service;
 
-import com.czx.school.DO.SC;
+import com.czx.school.entity.SC;
 import com.czx.school.DTO.ChangeGradeDTO;
 import com.czx.school.DTO.SelcetSCDTO;
 

@@ -1,6 +1,6 @@
 package com.czx.school.service;
 
-import com.czx.school.DO.Course;
+import com.czx.school.entity.Course;
 import com.czx.school.DTO.ChangeScoreDTO;
 import com.czx.school.DTO.ChangeTeacherDTO;
 

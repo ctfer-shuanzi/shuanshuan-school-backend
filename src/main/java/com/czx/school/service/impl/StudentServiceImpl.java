@@ -3,7 +3,7 @@ package com.czx.school.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.czx.school.DO.Student;
+import com.czx.school.entity.Student;
 import com.czx.school.DTO.ChangStudentMajorDTO;
 import com.czx.school.DTO.ChangeStudentNameDTO;
 import com.czx.school.mapper.StudentMapper;

@@ -1,0 +1,49 @@
+server:
+  port: 8080  # 应用服务 WEB 访问端口
+
+spring:
+  mvc:
+    static-path-pattern: /images/** #静态资源访问路径
+  web:
+    resources:
+      static-locations:  classpath:/static/, file:D:/upload/ #静态资源存储路径
+  servlet:
+    multipart:
+      max-file-size: 10MB        # 单个文件最大大小
+      max-request-size: 100MB    # 整个请求最大大小
+      enabled: true
+  datasource: # 数据源配置（MySQL）
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver #数据库驱动，8.0+version的mysql选这个
+    url: jdbc:mysql://localhost:3306/school?useSSL=false&serverTimezone=UTC&characterEncoding=utf8 #后面的
+    username: root    #数据库用户名
+    password: 123456  #数据库密码
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  type-aliases-package: com.czx.school.entity #实体类包的包名
+  mapper-locations: classpath:mapper/*.xml # XML映射文件位置
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 日志打印
+  global-config:
+    db-config:
+      id-type: auto # 主键生成策略
+      logic-delete-field: deleted # 逻辑删除字段名
+      logic-delete-value: 1 # 逻辑已删除值
+      logic-not-delete-value: 0 # 逻辑未删除值
+
+# Springdoc OpenAPI 相关配置（可选）
+springdoc:
+  swagger-ui:
+    # Swagger UI 访问路径（默认是 /swagger-ui/index.html，一般无需修改）http://localhost:8080/swagger-ui/index.html
+    # http://localhost:8080/swagger
+    # OpenAPI JSON 文档路径（默认是 /v3/api-docs，一般无需修改）http://localhost:8080/v3/api-docs
+    # springdoc.api-docs.path=/openapi.json
+    # http://localhost:8080/oepnapi.json
+    # 如果你想改成 /swagger，可以设置如下：
+    path: /swagger
+    # UI 界面优化配置
+    tags-sorter: alpha
+    operations-sorter: alpha
+    show-request-duration: true
+    doc-expansion: none

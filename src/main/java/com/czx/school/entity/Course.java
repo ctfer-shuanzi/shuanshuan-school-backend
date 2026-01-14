@@ -1,4 +1,4 @@
-package com.czx.school.DO;
+package com.czx.school.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;

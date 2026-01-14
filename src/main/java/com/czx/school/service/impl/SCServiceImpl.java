@@ -1,10 +1,9 @@
 package com.czx.school.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.czx.school.DO.SC;
+import com.czx.school.entity.SC;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.czx.school.DTO.ChangeGradeDTO;
-import com.czx.school.DTO.ChangeStudentNameDTO;
 import com.czx.school.DTO.SelcetSCDTO;
 import com.czx.school.mapper.SCMapper;
 import com.czx.school.service.SCService;
