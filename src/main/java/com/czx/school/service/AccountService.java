@@ -1,5 +1,6 @@
 package com.czx.school.service;
 
+import com.czx.school.DTO.PageDTO;
 import com.czx.school.entity.Account;
 import com.czx.school.DTO.LoginDTO;
 import com.czx.school.DTO.RegisterDTO;
@@ -12,5 +13,5 @@ public interface AccountService {
     Account selectById(Integer id);
     boolean register(RegisterDTO registerDTO);
     boolean delete(String username);
-    List<Account> getPages(Integer currentPage,Integer limit);
+    List<Account> getPages(PageDTO pageDTO);
 }

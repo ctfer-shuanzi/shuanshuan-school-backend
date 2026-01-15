@@ -1,6 +1,7 @@
 package com.czx.school.controller;
 
 import com.czx.school.DTO.LoginDTO;
+import com.czx.school.DTO.PageDTO;
 import com.czx.school.DTO.RegisterDTO;
 import com.czx.school.VO.Response;
 import com.czx.school.entity.Account;
@@ -56,8 +57,8 @@ public class AccountController {
     }
 
     @PostMapping(value = "/page")
-    public Response<List<Account>> getPages(@RequestParam Integer currentPage,@RequestParam Integer limit){
-        List<Account> records = accountService.getPages(currentPage,limit);
+    public Response<List<Account>> getPages(@RequestBody PageDTO pageDTO){
+        List<Account> records = accountService.getPages(pageDTO);
         if(records.isEmpty()){
             return Response.fail(ErrorCode.PAGE_EMPTY.getCode(),ErrorCode.PAGE_EMPTY.getMsg());
         }

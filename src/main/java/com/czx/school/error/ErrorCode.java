@@ -24,8 +24,12 @@ public enum ErrorCode {
 
     STUDENT_ALREADY_EXIST(1010,"该学生已存在"),
     STUDENT_NOT_EXIST(1011,"该学生不存在"),
-    PAGE_EMPTY(1020,"页面记录为空");
 
+    PAGE_EMPTY(1020,"页面记录为空"),
+
+    NO_RECORD(1030,"表格记录数量为0")
+
+    ;
     private final int code;
     private final String msg;
 }

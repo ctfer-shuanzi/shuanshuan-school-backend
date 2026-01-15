@@ -1,5 +1,6 @@
 package com.czx.school.controller;
 
+import com.czx.school.DTO.PageDTO;
 import com.czx.school.entity.SC;
 import com.czx.school.entity.Student;
 import com.czx.school.DTO.ChangStudentMajorDTO;
@@ -9,9 +10,7 @@ import com.czx.school.error.ErrorCode;
 import com.czx.school.service.SCService;
 import com.czx.school.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -82,5 +81,21 @@ public class StudentController {
         }else{
             return studentService.changeMajor(changStudentMajorDTO) ? Response.success("修改成功") : Response.fail(400, "修改失败");
         }
+    }
+    @PostMapping("/page")
+    public Response<List<Student>> getPages(@RequestBody PageDTO pageDTO){
+        List<Student> records = studentService.getPages(pageDTO);
+        if(records.isEmpty()){
+            return Response.fail(ErrorCode.PAGE_EMPTY.getCode(),ErrorCode.PAGE_EMPTY.getMsg());
+        }
+        return Response.success(records);
+    }
+    @GetMapping("/total")
+    public Response<Integer> getTotalRecordsNum(){
+        Integer number = studentService.getTotalRecordsNum();
+        if(number == 0){
+            return Response.fail();
+        }
+        return Response.success(number);
     }
 }

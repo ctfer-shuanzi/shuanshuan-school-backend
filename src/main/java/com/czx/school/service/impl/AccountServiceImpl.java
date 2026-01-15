@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.czx.school.DTO.PageDTO;
 import com.czx.school.entity.Account;
 import com.czx.school.DTO.LoginDTO;
 import com.czx.school.DTO.RegisterDTO;
@@ -72,8 +73,8 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
     }
 
     @Override
-    public List<Account> getPages(Integer currentPage, Integer limit) {
-        IPage<Account> page = new Page<>(currentPage,limit);
+    public List<Account> getPages(PageDTO pageDTO) {
+        IPage<Account> page = new Page<>(pageDTO.getCurrentPage(), pageDTO.getLimit());
         IPage<Account> accountIPage = AccountMapper.selectPage(page,null);
         System.out.println(accountIPage.getPages());
         System.out.println(accountIPage.getTotal());

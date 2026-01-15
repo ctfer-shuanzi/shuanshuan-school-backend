@@ -14,4 +14,7 @@ public interface StudentMapper extends BaseMapper<Student> {
     // 自定义查询方法
     @Select("select * from Student where number = #{number}")
     Student selectStudentByNumber(@Param("number") String number);
+
+    @Select("select count(*) from student")
+    Integer getTotalRecordsNum();
 }

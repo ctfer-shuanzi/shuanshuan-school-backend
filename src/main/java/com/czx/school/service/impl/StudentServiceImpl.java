@@ -2,7 +2,10 @@ package com.czx.school.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.czx.school.DTO.PageDTO;
 import com.czx.school.entity.Student;
 import com.czx.school.DTO.ChangStudentMajorDTO;
 import com.czx.school.DTO.ChangeStudentNameDTO;
@@ -68,5 +71,19 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         updateStudent.setMajor(changStudentMajorDTO.getMajor());
 
         return studentMapper.update(updateStudent, updateWrapper) > 0;
+    }
+
+    @Override
+    public List<Student> getPages(PageDTO pageDTO) {
+        IPage<Student> page = new Page<>(pageDTO.getCurrentPage(), pageDTO.getLimit());
+        IPage<Student> studentIPage = studentMapper.selectPage(page,null);
+        System.out.println(studentIPage.getPages());
+        System.out.println(studentIPage.getTotal());
+        return studentIPage.getRecords();
+    }
+
+    @Override
+    public Integer getTotalRecordsNum() {
+        return studentMapper.getTotalRecordsNum();
     }
 }

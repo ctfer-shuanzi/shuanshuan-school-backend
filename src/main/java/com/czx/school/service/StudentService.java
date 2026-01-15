@@ -1,5 +1,6 @@
 package com.czx.school.service;
 
+import com.czx.school.DTO.PageDTO;
 import com.czx.school.entity.Student;
 import com.czx.school.DTO.ChangStudentMajorDTO;
 import com.czx.school.DTO.ChangeStudentNameDTO;
@@ -20,4 +21,6 @@ public interface StudentService {
     // 改
     boolean changeName(ChangeStudentNameDTO chaneStudentNameDTO);
     boolean changeMajor(ChangStudentMajorDTO changStudentMajorDTO);
+    List<Student> getPages(PageDTO pageDTO);
+    Integer getTotalRecordsNum();
 }
