@@ -5,12 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.czx.school.DTO.ChangeStudentDTO;
 import com.czx.school.DTO.PageDTO;
+import com.czx.school.common.PageResponse;
 import com.czx.school.entity.Student;
-import com.czx.school.DTO.ChangStudentMajorDTO;
-import com.czx.school.DTO.ChangeStudentNameDTO;
 import com.czx.school.mapper.StudentMapper;
 import com.czx.school.service.StudentService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,70 +21,53 @@ import java.util.List;
 public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> implements StudentService {
     @Autowired
     private StudentMapper studentMapper;
-    // StudentMapper中定义的带有@Select注解的方法
-    @Override
-    public Student selectStudentByNumber(String number) {
-        return studentMapper.selectStudentByNumber(number);
-    }
-    // 调用wrapper和mapper方法的方法
     // 增
     @Override
-    public boolean addStudent(Student student) {
+    public boolean add(Student student) {
         return studentMapper.insert(student) > 0;
     }
     // 删
     @Override
-    public boolean deleteByName(String name) {
-        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Student::getName, name);
-        return studentMapper.delete(queryWrapper) > 0;
-    }
-    // 查
-    @Override
-    public Student selectStudentByName(String name){
-        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Student::getName, name);
-        return studentMapper.selectOne(queryWrapper);
-    }
-    @Override
-    public List<Student> selectStudentsByMajor(String major){
-        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Student::getMajor, major);
-        return studentMapper.selectList(queryWrapper);
+    public boolean delete(String name) {
+        return studentMapper.delete(new LambdaQueryWrapper<Student>().eq(Student::getName, name)) > 0;
     }
     // 改
     @Override
-    public boolean changeName(ChangeStudentNameDTO changeStudentNameDTO){
-        UpdateWrapper<Student> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("name",changeStudentNameDTO.getName());
+    public boolean update(ChangeStudentDTO changeStudentDTO) {
+        Student student = new Student();
+        BeanUtils.copyProperties(changeStudentDTO,student);
+        student.setName(changeStudentDTO.getNewName());
 
-        Student updateStudent = new Student();
-        updateStudent.setName(changeStudentNameDTO.getNewName());
-
-        return studentMapper.update(updateStudent, updateWrapper) > 0;
+        return studentMapper.update(student,new UpdateWrapper<Student>().eq("name",changeStudentDTO.getOldName())) > 0;
+    }
+    // 查
+    @Override
+    public Student selectByNumber(String number) {
+        return studentMapper.selectByNumber(number);
     }
     @Override
-    public boolean changeMajor(ChangStudentMajorDTO changStudentMajorDTO){
-        UpdateWrapper<Student> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("name", changStudentMajorDTO.getName());
-
-        Student updateStudent = new Student();
-        updateStudent.setMajor(changStudentMajorDTO.getMajor());
-
-        return studentMapper.update(updateStudent, updateWrapper) > 0;
+    public Student selectByName(String name){
+        return studentMapper.selectOne(new LambdaQueryWrapper<Student>().eq(Student::getName, name));
+    }
+    @Override
+    public List<Student> selectByMajor(String major){
+        return studentMapper.selectList(new LambdaQueryWrapper<Student>().eq(Student::getMajor, major));
     }
 
     @Override
-    public List<Student> getPages(PageDTO pageDTO) {
+    public PageResponse<Student> getPages(PageDTO pageDTO) {
         IPage<Student> page = new Page<>(pageDTO.getCurrentPage(), pageDTO.getLimit());
-        IPage<Student> studentIPage = studentMapper.selectPage(page,null);
-        System.out.println(studentIPage.getPages());
-        System.out.println(studentIPage.getTotal());
-        return studentIPage.getRecords();
-    }
+        IPage<Student> result = studentMapper.selectPage(page,null);
 
-    @Override
-    public Integer getTotalRecordsNum() {
-        return studentMapper.getTotalRecordsNum();
+        List<Student> records = result.getRecords();
+
+        PageResponse<Student> pageResponse = new PageResponse<>();
+        pageResponse.setList(records);
+        pageResponse.setTotal(result.getTotal());
+        pageResponse.setCurrent(result.getCurrent());
+        pageResponse.setSize(result.getSize());
+        pageResponse.setPages(result.getPages());
+
+        return pageResponse;
     }
 }

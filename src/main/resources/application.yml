@@ -18,6 +18,8 @@ spring:
     url: jdbc:mysql://localhost:3306/school?useSSL=false&serverTimezone=UTC&characterEncoding=utf8 #后面的
     username: root    #数据库用户名
     password: 123456  #数据库密码
+  main:
+    allow-bean-definition-overriding: true
 
 # MyBatis-Plus 配置
 mybatis-plus:
@@ -47,3 +49,19 @@ springdoc:
     operations-sorter: alpha
     show-request-duration: true
     doc-expansion: none
+
+langchain4j:
+  open-ai:
+    chat-model:
+      api-key: sk-75d054c7187d4c2594328c4038fcae09
+      model-name: gpt-4o
+      #请求和响应日志
+      log-requests: true
+      log-responses: true
+
+  #启用日志debug级别
+  community:
+    dashscope:
+      chat-model:
+        api-key: sk-75d054c7187d4c2594328c4038fcae09
+        model-name: qwen-max

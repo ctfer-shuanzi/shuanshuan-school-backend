@@ -1,13 +1,12 @@
 package com.czx.school.controller;
 
-import com.czx.school.DTO.PageDTO;
-import com.czx.school.entity.SC;
+import com.czx.school.DTO.*;
+import com.czx.school.common.PageResponse;
+import com.czx.school.entity.Choose;
 import com.czx.school.entity.Student;
-import com.czx.school.DTO.ChangStudentMajorDTO;
-import com.czx.school.DTO.ChangeStudentNameDTO;
-import com.czx.school.VO.Response;
-import com.czx.school.error.ErrorCode;
-import com.czx.school.service.SCService;
+import com.czx.school.common.Response;
+import com.czx.school.common.ErrorCode;
+import com.czx.school.service.ChooseService;
 import com.czx.school.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,85 +16,66 @@ import java.util.List;
 @RestController
 @RequestMapping("/student")
 public class StudentController {
-    // 相当于new了一个实例
-    @Autowired
+    @Autowired// 相当于new了一个实例
     private StudentService studentService;
     @Autowired
-    private SCService scService;
+    private ChooseService chooseService;
     // 增
     @PostMapping("/add")
-    public Response<String> addStudent(Student student) {
-        Student student1 = studentService.selectStudentByName(student.getName());
-        if (student1 != null)
-        {
+    public Response<String> addStudent(@RequestBody Student student) {
+        if (studentService.selectByName(student.getName()) != null) {
             return Response.fail(ErrorCode.STUDENT_ALREADY_EXIST.getCode(), ErrorCode.STUDENT_ALREADY_EXIST.getMsg());
-        }else
-        {
-            return studentService.addStudent(student)
-                    ? Response.success("添加成功")
-                    : Response.fail(ErrorCode.STUDENT_NOT_EXIST.getCode(), ErrorCode.STUDENT_NOT_EXIST.getMsg());
         }
+        return studentService.add(student)
+                ? Response.success("学生添加成功",null)
+                : Response.fail(ErrorCode.STUDENT_ADD_FAILURE.getCode(), ErrorCode.STUDENT_ADD_FAILURE.getMsg());
     }
     // 删
     @PostMapping("/delete")
-    public Response<String> deleteStudent(String name) {
-        Student student = studentService.selectStudentByName(name);
+    public Response<String> deleteStudent(@RequestParam String name) {
+        Student student = studentService.selectByName(name);
+
         if(student == null){
-            return Response.fail(400, "该学生不存在");
-        }else{
-            List<SC> scList = scService.selectBySno(student.getNumber());
-            if(scList.isEmpty()){
-                return studentService.deleteByName(name) ? Response.success("删除成功") : Response.fail(400, "删除失败");
-            }
-            return scService.deleteBySno(student.getNumber()) && studentService.deleteByName(name) ? Response.success("删除成功") : Response.fail(400, "删除失败");
+            return Response.fail(ErrorCode.STUDENT_NOT_EXIST.getCode(), ErrorCode.STUDENT_NOT_EXIST.getMsg());
         }
+
+        List<Choose> chooseList = chooseService.selectBySno(student.getNumber());
+        if(chooseList.isEmpty()){
+            return studentService.delete(name)
+                    ? Response.success("学生非级联式删除成功",null)
+                    : Response.fail(ErrorCode.STUDENT_DELETE_FAILURE.getCode(), ErrorCode.STUDENT_DELETE_FAILURE.getMsg());
+        }
+
+        return chooseService.deleteBySno(student.getNumber()) && studentService.delete(name)
+                ? Response.success("学生级联式删除成功",null)
+                : Response.fail(ErrorCode.STUDENT_DELETE_FAILURE.getCode(), ErrorCode.STUDENT_DELETE_FAILURE.getMsg());
+    }
+    // 改
+    @PostMapping("/update")
+    public Response<String> update(@RequestBody ChangeStudentDTO changeStudentDTO){
+        if(studentService.selectByName(changeStudentDTO.getOldName()) == null){
+            return Response.fail(ErrorCode.STUDENT_NOT_EXIST.getCode(),ErrorCode.STUDENT_NOT_EXIST.getMsg());
+        }
+
+        return studentService.update(changeStudentDTO)
+                ? Response.success("学生修改成功",null)
+                : Response.fail(ErrorCode.STUDENT_UPDATE_FAILURE.getCode(),ErrorCode.STUDENT_UPDATE_FAILURE.getMsg());
     }
     // 查
     @PostMapping("/select/major")
-    public Response<List<String>> selectNamesByMajor(String major) {
-        List<Student> studentList = studentService.selectStudentsByMajor(major);
-        if (studentList.isEmpty())
-        {
-            return Response.fail(400, "该专业没有学生");
-        }else
-        {
-            List<String> nameList = studentList.stream().map(Student::getName).toList();
-            return Response.success("查询成功", nameList);
-        }
-    }
-    // 改
-    @PostMapping("change/name")
-    public Response<String> changeName(ChangeStudentNameDTO changeStudentNameDTO){
-        if (studentService.selectStudentByName(changeStudentNameDTO.getName()) == null)
-        {
-            return Response.fail(400, "该学生不存在");
-        }else{
-            return studentService.changeName(changeStudentNameDTO) ? Response.success("修改成功") : Response.fail(400, "修改失败");
-        }
-    }
-    @PostMapping("change/major")
-    public Response<String> changeMajor(ChangStudentMajorDTO changStudentMajorDTO){
-        if (studentService.selectStudentByName(changStudentMajorDTO.getName()) == null)
-        {
-            return Response.fail(400, "该学生不存在");
-        }else{
-            return studentService.changeMajor(changStudentMajorDTO) ? Response.success("修改成功") : Response.fail(400, "修改失败");
-        }
+    public Response<List<Student>> selectByMajor(@RequestParam String major) {
+        List<Student> list = studentService.selectByMajor(major);
+
+        return !list.isEmpty()
+                ? Response.success("学生查询成功", list)
+                : Response.fail(ErrorCode.STUDENT_QUERY_BY_MAJOR_FAILURE.getCode(), ErrorCode.STUDENT_QUERY_BY_MAJOR_FAILURE.getMsg());
     }
     @PostMapping("/page")
-    public Response<List<Student>> getPages(@RequestBody PageDTO pageDTO){
-        List<Student> records = studentService.getPages(pageDTO);
-        if(records.isEmpty()){
-            return Response.fail(ErrorCode.PAGE_EMPTY.getCode(),ErrorCode.PAGE_EMPTY.getMsg());
-        }
-        return Response.success(records);
-    }
-    @GetMapping("/total")
-    public Response<Integer> getTotalRecordsNum(){
-        Integer number = studentService.getTotalRecordsNum();
-        if(number == 0){
-            return Response.fail();
-        }
-        return Response.success(number);
+    public Response<PageResponse<Student>> getPages(@RequestBody PageDTO pageDTO){
+        PageResponse<Student> records = studentService.getPages(pageDTO);
+
+        return !records.getList().isEmpty()
+                ? Response.success("学生分页查询成功",records)
+                : Response.fail(ErrorCode.PAGE_EMPTY.getCode(),ErrorCode.PAGE_EMPTY.getMsg());
     }
 }

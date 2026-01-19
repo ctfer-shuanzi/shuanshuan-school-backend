@@ -29,6 +29,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<mybatis-plus.version>3.5.14</mybatis-plus.version>
+		<langchain4j.version>1.0.0-beta3</langchain4j.version>
 	</properties>
 	<dependencies>
 		<!--Spring Web-->
@@ -41,7 +42,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.32</version> <!-- 或更高，比如 1.18.34、1.18.30+ -->
+			<version>1.18.30</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -91,6 +92,18 @@
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
+
+		<!-- 基于open-ai的langchain4j接口：ChatGPT、deepseek都是open-ai标准下的大模型 -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
+		</dependency>
+
+		<!-- 接入阿里云百炼平台 -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-community-dashscope-spring-boot-starter</artifactId>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -102,6 +115,25 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<!--引入langchain4j依赖管理清单-->
+			<dependency>
+				<groupId>dev.langchain4j</groupId>
+				<artifactId>langchain4j-bom</artifactId>
+				<version>${langchain4j.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!--引入百炼依赖管理清单-->
+			<dependency>
+				<groupId>dev.langchain4j</groupId>
+				<artifactId>langchain4j-community-bom</artifactId>
+				<version>${langchain4j.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -111,6 +143,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
+					<source>17</source>
+					<target>17</target>
+					<encoding>UTF-8</encoding>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>

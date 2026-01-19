@@ -1,5 +1,6 @@
 package com.czx.school.controller;
 
+import com.czx.school.common.Response;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +14,7 @@ import java.io.IOException;
 @RequestMapping("/file")
 public class FileController {
     @PostMapping(value = "/upload")
-    public String upload(@RequestParam("file") MultipartFile file) throws IOException {
+    public Response<String> upload(@RequestParam("file") MultipartFile file) throws IOException {
         File path = new File("D://upload/");
         if(!path.exists()){
             path.mkdir();
@@ -24,6 +25,6 @@ public class FileController {
         System.out.println("f's path: "+f.getAbsolutePath());
 
         file.transferTo(f);
-        return "success";
+        return Response.success("文件上传成功",null);
     }
 }

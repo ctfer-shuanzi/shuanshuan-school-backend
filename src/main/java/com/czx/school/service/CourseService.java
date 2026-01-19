@@ -1,15 +1,22 @@
 package com.czx.school.service;
 
+import com.czx.school.DTO.ChangeCourseDTO;
+import com.czx.school.DTO.PageDTO;
+import com.czx.school.common.PageResponse;
 import com.czx.school.entity.Course;
-import com.czx.school.DTO.ChangeScoreDTO;
-import com.czx.school.DTO.ChangeTeacherDTO;
+
+import java.util.List;
 
 public interface CourseService {
-    boolean addCourse(Course course);
-    boolean deleteByName(String name);
+    // 增
+    boolean add(Course course);
+    // 删
+    boolean delete(String name);
+    // 改
+    boolean update(ChangeCourseDTO changeCourseDTO);
+    // 查
+    Course selectByCid(String cid);
     Course selectByName(String name);
-    Double selectScoreByName(String name);
-    String selectTeacherByName(String name);
-    boolean changeScore(ChangeScoreDTO changeScoreDTO);
-    boolean changeTeacher(ChangeTeacherDTO changeTeacherDTO);
+    List<Course> selectByTeacher(String teacher);
+    PageResponse<Course> getPages(PageDTO pageDTO);
 }

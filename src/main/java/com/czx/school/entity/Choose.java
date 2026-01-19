@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @TableName("SC")
-public class SC {
+public class Choose {
     @TableId
     private String id;
     private String sno;

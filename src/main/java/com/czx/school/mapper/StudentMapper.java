@@ -13,8 +13,5 @@ public interface StudentMapper extends BaseMapper<Student> {
     // 继承 BaseMapper<Student> 后，直接拥有 CRUD 方法（如 selectById, insert, update 等）
     // 自定义查询方法
     @Select("select * from Student where number = #{number}")
-    Student selectStudentByNumber(@Param("number") String number);
-
-    @Select("select count(*) from student")
-    Integer getTotalRecordsNum();
+    Student selectByNumber(@Param("number") String number);
 }

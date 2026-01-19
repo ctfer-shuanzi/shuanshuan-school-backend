@@ -1,65 +1,72 @@
 package com.czx.school.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.czx.school.DTO.ChangeCourseDTO;
+import com.czx.school.DTO.PageDTO;
+import com.czx.school.common.PageResponse;
 import com.czx.school.entity.Course;
-import com.czx.school.DTO.ChangeScoreDTO;
-import com.czx.school.DTO.ChangeTeacherDTO;
 import com.czx.school.mapper.CourseMapper;
 import com.czx.school.service.CourseService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements CourseService {
     @Autowired
     private CourseMapper courseMapper;
+    // 增
     @Override
-    public Course selectByName(String name){
-        LambdaQueryWrapper<Course> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Course::getName, name);
-        return courseMapper.selectOne(queryWrapper);
-    }
-    @Override
-    public Double selectScoreByName(String name){
-        LambdaQueryWrapper<Course> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Course::getName, name);
-        return courseMapper.selectOne(queryWrapper).getScore();
-    }
-    @Override
-    public String selectTeacherByName(String name){
-        LambdaQueryWrapper<Course> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Course::getName, name);
-        return courseMapper.selectOne(queryWrapper).getTeacher();
-    }
-    @Override
-    public boolean addCourse(Course course) {
+    public boolean add(Course course) {
         return courseMapper.insert(course) > 0;
     }
+    // 删
     @Override
-    public boolean deleteByName(String name){
-        LambdaQueryWrapper<Course> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Course::getName, name);
-        return courseMapper.delete(queryWrapper) > 0;
+    public boolean delete(String name) {
+        return courseMapper.delete(new LambdaQueryWrapper<Course>().eq(Course::getName,name)) > 0;
+    }
+    // 改
+    @Override
+    public boolean update(ChangeCourseDTO changeCourseDTO) {
+        Course course = new Course();
+        BeanUtils.copyProperties(changeCourseDTO,course);
+        course.setName(changeCourseDTO.getNewName());
+
+        return courseMapper.update(course,new UpdateWrapper<Course>().eq("name",changeCourseDTO.getOldName())) > 0;
+    }
+    // 查
+    @Override
+    public Course selectByCid(String cid) {
+        return courseMapper.selectByCid(cid);
     }
     @Override
-    public boolean changeScore(ChangeScoreDTO changeScoreDTO){
-        LambdaQueryWrapper<Course> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Course::getName, changeScoreDTO.getName());
-
-        Course updateCourse = new Course();
-        updateCourse.setScore(changeScoreDTO.getScore());
-
-        return courseMapper.update(updateCourse, queryWrapper) > 0;
+    public Course selectByName(String name){
+        return courseMapper.selectOne(new LambdaQueryWrapper<Course>().eq(Course::getName,name));
     }
     @Override
-    public boolean changeTeacher(ChangeTeacherDTO changeTeacherDTO){
-        LambdaQueryWrapper<Course> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Course::getName, changeTeacherDTO.getName());
+    public List<Course> selectByTeacher(String teacher) {
+        return courseMapper.selectList(new LambdaQueryWrapper<Course>().eq(Course::getTeacher,teacher));
+    }
+    @Override
+    public PageResponse<Course> getPages(PageDTO pageDTO) {
+        IPage<Course> page = new Page<>(pageDTO.getCurrentPage(), pageDTO.getLimit());
+        IPage<Course> result = courseMapper.selectPage(page,null);
 
-        Course updateCourse = new Course();
-        updateCourse.setTeacher(changeTeacherDTO.getNewTeacher());
+        List<Course> records = result.getRecords();
 
-        return courseMapper.update(updateCourse, queryWrapper) > 0;
+        PageResponse<Course> pageResponse = new PageResponse<>();
+        pageResponse.setList(records);
+        pageResponse.setTotal(result.getTotal());
+        pageResponse.setCurrent(result.getCurrent());
+        pageResponse.setSize(result.getSize());
+        pageResponse.setPages(result.getPages());
+
+        return pageResponse;
     }
 }

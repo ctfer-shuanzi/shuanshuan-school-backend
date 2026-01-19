@@ -1,26 +1,22 @@
 package com.czx.school.service;
 
+import com.czx.school.DTO.ChangeStudentDTO;
 import com.czx.school.DTO.PageDTO;
+import com.czx.school.common.PageResponse;
 import com.czx.school.entity.Student;
-import com.czx.school.DTO.ChangStudentMajorDTO;
-import com.czx.school.DTO.ChangeStudentNameDTO;
 
 import java.util.List;
 
 public interface StudentService {
-    // StudentMapper中定义的带有@Select注解的方法
-    Student selectStudentByNumber(String number);
-    // 调用wrapper和mapper方法的方法
     // 增
-    boolean addStudent(Student student);
+    boolean add(Student student);
     // 删
-    boolean deleteByName(String name);
-    // 查
-    Student selectStudentByName(String name);
-    List<Student> selectStudentsByMajor(String major);
+    boolean delete(String name);
     // 改
-    boolean changeName(ChangeStudentNameDTO chaneStudentNameDTO);
-    boolean changeMajor(ChangStudentMajorDTO changStudentMajorDTO);
-    List<Student> getPages(PageDTO pageDTO);
-    Integer getTotalRecordsNum();
+    boolean update(ChangeStudentDTO changeStudentDTO);
+    // 查
+    Student selectByNumber(String number);// StudentMapper中定义的带有@Select注解的方法
+    Student selectByName(String name);
+    List<Student> selectByMajor(String major);
+    PageResponse<Student> getPages(PageDTO pageDTO);
 }
